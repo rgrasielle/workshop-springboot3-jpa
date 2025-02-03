@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
 
+import com.educandoweb.course.entities.enums.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.persistence.Entity;
@@ -27,6 +28,8 @@ public class Order implements Serializable {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss'Z'", timezone = "GMT")
 	private Instant instant;  // usar a classe Instant ao invés de Date 
 	
+	private Integer orderStatus;  // integer somente aqui
+	
 	// Associação (muitos para um)
 	@ManyToOne  // instrui o JPA a transformar em uma chave estrangeira
 	@JoinColumn(name = "client_id")  // o nome que esse chave estrangeira vai ter no banco de dados
@@ -36,10 +39,11 @@ public class Order implements Serializable {
 	public Order() {
 	}
 
-	public Order(Long id, Instant instant, User client) {
+	public Order(Long id, Instant instant, OrderStatus orderStatus, User client) {
 		super();
 		this.id = id;
 		this.instant = instant;
+		setOrderStatus(orderStatus);
 		this.client = client;
 	}
 
@@ -58,6 +62,16 @@ public class Order implements Serializable {
 
 	public void setInstant(Instant instant) {
 		this.instant = instant;
+	}
+	
+	public OrderStatus getOrderStatus() {  // recebe um inteiro e tem que guardar internamente um OrderStatus 
+		return OrderStatus.valueOf(orderStatus);  // converter inteiro para OrderStatus
+	}
+
+	public void setOrderStatus(OrderStatus orderStatus) {  // recebe um OrderStatus e tem que guardar um num inteiro
+		if (orderStatus != null) {
+		this.orderStatus = orderStatus.getCode();
+		}
 	}
 
 	public User getClient() {
