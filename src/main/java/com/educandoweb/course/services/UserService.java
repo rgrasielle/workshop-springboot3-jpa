@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.educandoweb.course.entities.User;
 import com.educandoweb.course.repositories.UserRepository;
+import com.educandoweb.course.services.exceptions.ResourceNotFoundException;
 
 // Implementa 2 operações básicas: buscar todos os usuários e buscar usuário por ID
 
@@ -25,8 +26,8 @@ public class UserService {
 	// Método para retornar usuários por id
 	public User findById(Long id) {
 		Optional<User> obj = repository.findById(id);
-		return obj.get();  // retorna o objeto User que estiver dentro do Optional 
-	}
+		return obj.orElseThrow(() -> new ResourceNotFoundException(id));  
+	} 
 	
 	// Método para salvar um usuário no banco de dados
 	public User insert(User obj) {
